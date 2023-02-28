@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -166,7 +169,7 @@
   </style>
 </head>
 <body>
-<?php include 'login.php';?>
+<?php include 'login.php';?>	
 	<nav class="navbar navbar-inverse">
 		<div class="container-fluid">
 			<div class="navbar-header">
@@ -198,7 +201,6 @@
 					<p>ADS</p>
 				</div>
 				<div class="well">
-					<p>ADS</p>
 				</div>
 			</div>
 		</div>

@@ -1,0 +1,57 @@
+<h1>History Pembayaran</h1>
+                <table>
+                    <tr>
+                        <th>No</th>
+                        <th>Nisn</th>
+                        <th>Nama</th>
+                        <th>Kelas</th>
+                        <th>Nominal Pembayaran</th>
+                        <th>Bulan Dibayar</th>
+                        <th>Tahun Dibayar</th>
+                        <th>Petugas</th>
+                        <th>Aksi</th>
+                    </tr>
+					<?php
+						$no = 1;			
+						$query = $conn->query("select * from pembayaran inner join petugas on petugas.id_petugas=pembayaran.id_petugas inner join siswa on siswa.nisn=pembayaran.nisn inner join kelas on kelas.id_kelas=siswa.id_kelas inner join spp on spp.id_spp=pembayaran.id_spp ");
+						while($data = $query->fetch_array(	)){				
+					?>
+                    <tr>
+                        <td><a href="#"  onclick="document.getElementById('edit-<?= $data['id_pembayaran']?>').style.display='block'"><?= $no++ ?></a></td>
+                        <td><a href="#"  onclick="document.getElementById('edit-<?= $data['id_pembayaran']?>').style.display='block'"><?= $data['nisn']?></a></td>
+                        <td><a href="#"  onclick="document.getElementById('edit-<?= $data['id_pembayaran']?>').style.display='block'"><?= $data['nama']?></a></td>
+                        <td><a href="#"  onclick="document.getElementById('edit-<?= $data['id_pembayaran']?>').style.display='block'"><?= $data['nama_kelas']?></a></td>
+                        <td><a href="#"  onclick="document.getElementById('edit-<?= $data['id_pembayaran']?>').style.display='block'"><?= $data['nominal']?></a></td>
+                        <td><a href="#"  onclick="document.getElementById('edit-<?= $data['id_pembayaran']?>').style.display='block'"><?= $data['bulan_dibayar']?></a></td>
+                        <td><a href="#"  onclick="document.getElementById('edit-<?= $data['id_pembayaran']?>').style.display='block'"><?= $data['tahun_dibayar']?></a></td>
+                        <td><?= $data['nama_petugas']?></td>
+						<td>
+						<div id="edit-<?= $data['id_pembayaran']?>" class="modal">
+							<form class="modal-content animate"  method="post">
+								<div class="container-fluid">
+								<label for="psw"><b>Nisn</b></label>
+									<input type="text" value="<?= $data['nisn']?>">
+								<label for="siswa"><b>Nama siswa</b></label>
+									<input type="text" value="<?= $data['nama']?>" readonly>
+								<label for="siswa"><b>Nama Kelas</b></label>
+									<input type="text" value="<?= $data['nama_kelas']?>" readonly>
+								<label for="siswa"><b>Tanggal Bayar</b></label>
+									<input type="text" value="<?= $data['tgl_bayar']?>" readonly>
+								<label for="bulan_dibayar"><b>Bulan Dibayar</b></label>
+									<input type="text" value="<?= $data['bulan_dibayar']?>" readonly>
+								<label for="psw"><b>Tahun Dibayar</b></label>
+									<input type="number" readonly value="<?= $data['tahun_dibayar']?>" readonly>
+								<label for="siswa"><b>Nominal Yang Harus Dibayar</b></label>
+									<input type="text" value="<?= $data['nominal'] ?>" readonly>
+								</div>
+								<div class="container-fluid" style="background-color:#f1f1f1">
+								<button type="button" onclick="document.getElementById('edit-<?= $data['id_pembayaran']?>').style.display='none'" class="cancelbtn">Cancel</button>
+								</div> 
+							</form>
+						</div>
+							<a href="data_transaksi.php?page=hapus&id_pembayaran=<?= $data['id_pembayaran']?>" onclick="return confirm('apakah anda yakin ingin menghapus data ini?');">Hapus</a>
+							</script>
+						</td>
+                    </tr>
+					<?php }?>
+                </table>
