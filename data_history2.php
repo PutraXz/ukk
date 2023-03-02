@@ -1,18 +1,6 @@
 <?php
-	session_start();
-	$datas = $datas = [
-        ['month' => 'Januari'],
-        ['month' => 'Februari'],
-        ['month' => 'Maret'],
-        ['month' => 'April'],
-        ['month' => 'Mei'],
-        ['month' => 'Juni'],
-        ['month' => 'Juli'],
-        ['month' => 'September'],
-        ['month' => 'Oktober'],
-        ['month' => 'November'],
-        ['month' => 'Desember'],
-    ];
+session_start();
+	if($_SESSION['level'] == "admin" || $_SESSION['level'] == "petugas" ){
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,7 +9,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script type="text/javascript" src="jquery.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
   <link rel="stylesheet" href="bootstrap.min.css">
   <script src="jquery.min.js"></script>
   <script src="bootstrap.min.js"></script>
@@ -30,7 +17,7 @@
 	body {font-family: Calibri Light, georgia, sans-serif;}
 
 	/* Full-width input fields */
-	input[type=text], input[type=number],input[type=password], input[list], select, textarea, input[type=date] {
+	input[type=text], input[type=number], input[list], select, textarea, input[type=date] {
 	width: 100%;
 	padding: 12px 20px;
 	margin: 8px 0;
@@ -215,15 +202,15 @@ tr:nth-child(even) {
 	<div class="container-fluid text-center">    
 		<div class="row content">
 			<div class="col-sm-2 sidenav">
-				<p>
-                    <form action="" method="post">
+				<p> 
+					<form action="" method="post">
                         <input type="text" name="keyword" placeholder="Masukkan Nisn">
-                        <button type="submit" name="cari"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        <button type="submit" name="cari">Cari</button>
                     </form>
-                </p>
+				</p>
 			</div>
 			<div class="col-sm-8 text-left"> 
-				<h1>History Pembayaran</h1>
+				<h1 >History Pembayaran</h1>
 				<button onclick="window.location='data_history.php'">Reset</button>
 				<?php
 					if(@$_SESSION['level'] == 'admin'){ 
@@ -267,26 +254,20 @@ tr:nth-child(even) {
                         <th>Kelas</th>
                     </tr>
 					<?php
-						$no = 1;
-						if(isset($_POST['cari'])){
-							$keyword = $_POST['keyword'];
-							$query = $conn->query("select * from siswa inner join kelas on kelas.id_kelas=siswa.id_kelas where nisn='$keyword' ");
-						}else{				
-							$query = $conn->query("select * from siswa inner join kelas on kelas.id_kelas=siswa.id_kelas ");
-						}
-						if(isset($_POST['cari']) or isset($_SESSION['level'])){
-						while($data = $query->fetch_array()){				
+						$i = 1;	
+						$query2 = $conn->query("select * from siswa inner join kelas on kelas.id_kelas=siswa.id_kelas  ");
+						while($data2 = $query2->fetch_array()){				
 					?>
                     <tr>
-                        <td><a href="#"  onclick="document.getElementById('edit-<?= $data['nisn']?>').style.display='block'"><?= $no++ ?></a></td>
-                        <td><a href="#"  onclick="document.getElementById('edit-<?= $data['nisn']?>').style.display='block'"><?= $data['nisn']?></a></td>
-                        <td><a href="#"  onclick="document.getElementById('edit-<?= $data['nisn']?>').style.display='block'"><?= $data['nama']?></a></td>
+                        <td><a href="#"  onclick="document.getElementById('edit-<?= $data2['nisn']?>').style.display='block'"><?= $i++; ?></a></td>
+                        <td><a href="#"  onclick="document.getElementById('edit-<?= $data2['nisn']?>').style.display='block'"><?= $data2['nisn']?></a></td>
+                        <td><a href="#"  onclick="document.getElementById('edit-<?= $data2['nisn']?>').style.display='block'"><?= $data2['nama']?></a></td>
                         <td>
-                            <a href="#"  onclick="document.getElementById('edit-<?= $data['nisn']?>').style.display='block'"><?= $data['nama_kelas']?></a>
-                            <div id="edit-<?= $data['nisn']?>" class="modal">
-                                <form class="modal-content animate"  method="post">
-                                    <div class="container-fluid">
-										<h1>History Pembayaran</h1>
+							<a href="#"  onclick="document.getElementById('edit-<?= $data2['nisn']?>').style.display='block'"><?= $data2['nama_kelas']?></a>
+							<div id="edit-<?= $data2['nisn']?>" class="modal">
+							<div class="modal-content animate">
+								<div class="container-fluid">
+									<h1>History Pembayaran</h1>
 										<table>
 											<tr>
 												<th>No</th>
@@ -297,62 +278,62 @@ tr:nth-child(even) {
 												<th>Bulan Dibayar</th>
 												<th>Tahun Dibayar</th>
 												<th>Petugas</th>
+												<th>Aksi</th>
 											</tr>
 											<?php
-												$no = 1;		
-												$q_pembayaran = $conn->query("select * from pembayaran inner join petugas on petugas.id_petugas=pembayaran.id_petugas inner join siswa on siswa.nisn=pembayaran.nisn inner join kelas on kelas.id_kelas=siswa.id_kelas inner join spp on spp.id_spp=pembayaran.id_spp where pembayaran.nisn='$data[nisn]' order by pembayaran.tgl_bayar desc");
-												while($pembayaran = $q_pembayaran->fetch_array(	)){				
+												$no = 1;				
+												$query = $conn->query("select * from pembayaran inner join petugas on petugas.id_petugas=pembayaran.id_petugas inner join siswa on siswa.nisn=pembayaran.nisn inner join kelas on kelas.id_kelas=siswa.id_kelas inner join spp on spp.id_spp=pembayaran.id_spp where pembayaran.nisn='$data2[nisn]' ");
+												while($data = $query->fetch_array(	)){				
 											?>
 											<tr>
-												<td><a href="#"  onclick="document.getElementById('details-<?= $pembayaran['id_pembayaran']?>').style.display='block'"><?= $no++ ?></a></td>
-												<td><a href="#"  onclick="document.getElementById('details-<?= $pembayaran['id_pembayaran']?>').style.display='block'"><?= $pembayaran['nisn']?></a></td>
-												<td><a href="#"  onclick="document.getElementById('details-<?= $pembayaran['id_pembayaran']?>').style.display='block'"><?= $pembayaran['nama']?></a></td>
-												<td><a href="#"  onclick="document.getElementById('details-<?= $pembayaran['id_pembayaran']?>').style.display='block'"><?= $pembayaran['nama_kelas']?></a></td>
-												<td><a href="#"  onclick="document.getElementById('details-<?= $pembayaran['id_pembayaran']?>').style.display='block'"><?= $pembayaran['nominal']?></a></td>
-												<td><a href="#"  onclick="document.getElementById('details-<?= $pembayaran['id_pembayaran']?>').style.display='block'"><?= $pembayaran['bulan_dibayar']?></a></td>
-												<td><a href="#"  onclick="document.getElementById('details-<?= $pembayaran['id_pembayaran']?>').style.display='block'"><?= $pembayaran['tahun_dibayar']?></a></td>
-												<td><?= $pembayaran['nama_petugas']?>
-												<div id="details-<?= $pembayaran['id_pembayaran']?>" class="modal">
-													<div class="modal-content animate">
+												<td><a href="#"  onclick="document.getElementById('edit-<?= $data['id_pembayaran']?>').style.display='block'"><?= $no++ ?></a></td>
+												<td><a href="#"  onclick="document.getElementById('edit-<?= $data['id_pembayaran']?>').style.display='block'"><?= $data['nisn']?></a></td>
+												<td><a href="#"  onclick="document.getElementById('edit-<?= $data['id_pembayaran']?>').style.display='block'"><?= $data['nama']?></a></td>
+												<td><a href="#"  onclick="document.getElementById('edit-<?= $data['id_pembayaran']?>').style.display='block'"><?= $data['nama_kelas']?></a></td>
+												<td><a href="#"  onclick="document.getElementById('edit-<?= $data['id_pembayaran']?>').style.display='block'"><?= $data['nominal']?></a></td>
+												<td><a href="#"  onclick="document.getElementById('edit-<?= $data['id_pembayaran']?>').style.display='block'"><?= $data['bulan_dibayar']?></a></td>
+												<td><a href="#"  onclick="document.getElementById('edit-<?= $data['id_pembayaran']?>').style.display='block'"><?= $data['tahun_dibayar']?></a></td>
+												<td><?= $data['nama_petugas']?></td>
+												<td>
+												<div id="edit-<?= $data['id_pembayaran']?>" class="modal">
+													<form class="modal-content animate"  method="post">
 														<div class="container-fluid">
-															<label for="psw"><b>Nisn</b></label>
-																<input type="text" value="<?= $pembayaran['nisn']?>">
-															<label for="siswa"><b>Nama siswa</b></label>
-																<input type="text" value="<?= $pembayaran['nama']?>" readonly>
-															<label for="siswa"><b>Nama Kelas</b></label>
-																<input type="text" value="<?= $pembayaran['nama_kelas']?>" readonly>
-							 								<label for="siswa"><b>Tanggal Bayar</b></label>
-																<input type="text" value="<?= $pembayaran['tgl_bayar']?>" readonly>
-															<label for="bulan_dibayar"><b>Bulan Dibayar</b></label>
-																<input type="text" value="<?= $pembayaran['bulan_dibayar']?>" readonly>
-															<label for="psw"><b>Tahun Dibayar</b></label>
-																<input type="number" readonly value="<?= $pembayaran['tahun_dibayar']?>" readonly>
-															<label for="siswa"><b>Nominal Yang Harus Dibayar</b></label>
-																<input type="text" value="<?= $pembayaran['nominal'] ?>" readonly>
+														<label for="psw"><b>Nisn</b></label>
+															<input type="text" value="<?= $data['nisn']?>">
+														<label for="siswa"><b>Nama siswa</b></label>
+															<input type="text" value="<?= $data['nama']?>" readonly>
+														<label for="siswa"><b>Nama Kelas</b></label>
+															<input type="text" value="<?= $data['nama_kelas']?>" readonly>
+														<label for="siswa"><b>Tanggal Bayar</b></label>
+															<input type="text" value="<?= $data['tgl_bayar']?>" readonly>
+														<label for="bulan_dibayar"><b>Bulan Dibayar</b></label>
+															<input type="text" value="<?= $data['bulan_dibayar']?>" readonly>
+														<label for="psw"><b>Tahun Dibayar</b></label>
+															<input type="number" readonly value="<?= $data['tahun_dibayar']?>" readonly>
+														<label for="siswa"><b>Nominal Yang Harus Dibayar</b></label>
+															<input type="text" value="<?= $data['nominal'] ?>" readonly>
 														</div>
 														<div class="container-fluid" style="background-color:#f1f1f1">
-														<button type="button" onclick="document.getElementById('details-<?= $pembayaran['id_pembayaran']?>').style.display='none'" class="cancelbtn">Cancel</button>
+														<button type="button" onclick="document.getElementById('edit-<?= $data['id_pembayaran']?>').style.display='none'" class="cancelbtn">Cancel</button>
 														</div> 
-													</div>
+													</form>
 												</div>
+													<a href="data_transaksi.php?page=hapus&id_pembayaran=<?= $data['id_pembayaran']?>" onclick="return confirm('apakah anda yakin ingin menghapus data ini?');">Hapus</a>
+													</script>
 												</td>
 											</tr>
-											<?php } }?>
+											<?php }?>
 										</table>
-                                    </div>
-                                    <div class="container-fluid" style="background-color:#f1f1f1">
-                                    	<button type="button" onclick="document.getElementById('edit-<?= $data['nisn']?>').style.display='none'" class="cancelbtn">Cancel</button>
-                                    </div> 
-                                </form>
-                            </div>
-                        </td>
+									</div>
+								<div class="container-fluid" style="background-color:#f1f1f1">
+									<button type="button" onclick="document.getElementById('edit-<?= $data2['nisn']?>').style.display='none'" class="cancelbtn">Cancel</button>
+								</div> 
+							</div>
+						</div>
+						</td>
+						
                     </tr>
-					<?php }else{
-						echo '<tr >
-							<td colspan="4" style="text-align:center"> Silahkan Cari Dulu </td>
-							</tr>';
-						}
-					?>
+					<?php }?>
                 </table>
 			</div>
 			<div class="col-sm-2 sidenav">
@@ -374,7 +355,6 @@ tr:nth-child(even) {
             $tahun_dibayar = $_POST['tahun_dibayar'];
 			$id_spp = $_POST['id_spp'];
             $jumlah_bayar = $_POST['jumlah_bayar'];
-			$
 			$conn->query("insert into pembayaran set id_petugas='$id_petugas', nisn='$nisn', tgl_bayar='$tgl_bayar', bulan_dibayar= '$bulan_dibayar', tahun_dibayar='$tahun_dibayar',id_spp='$id_spp', jumlah_bayar='$jumlah_bayar'");
 			echo "
 			<script>
@@ -439,3 +419,13 @@ window.onclick = function(event) {
 </script>
 </body>
 </html>
+<?php
+	}else{
+		echo "
+			<script>
+				alert('anda tidak memiliki akses ke halam ini');
+				window.location.href='index.php';
+			</script>
+		";
+	}
+?>
